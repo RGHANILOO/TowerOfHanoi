@@ -1,16 +1,43 @@
 // How many disks do you want? Select a number from 3 to 8
 // create dom element to give an option of 3-8
-const noDisks = 8;
-
+// const noDisks = 8;
+//  usser selection processing func
+const processUserSelection = (stackNo) => {
+    if (finisshed) {
+      return;
+    }
+  
+    // if nostack is selected before
+    if (selectedStackNo < 1) {
+      const stackDisks = getStackDisks(stackNo);
+      // ...if the new selection has disks, then this becomes the selection
+  
+      if (stackDisks && stackDisks.length > 0) {
+        selectedStackNo = stackNo;
+      }
+      return;
+    }
+    if (moveDisk(selectedStackNo, stackNo)) {
+      // sucsecful move
+      moves++;
+  
+      if (isFinished()) {
+        finished = true;
+        // sound ('tadam') // add a sound option for game finish
+      }
+    }
+  
+    selectedStackNo = 0;
+  };
 // Initialize stacks
 const stacks = [[], [], []];
 
 // Add disks to the first stack
-for (let i = noDisks; i >= 1; i--) {
-  stacks[0].push(i);
-}
+// for (let i = noDisks; i >= 1; i--) {
+//   stacks[0].push(i);
+// }
 
-/// addint kb event listner
+/// adding kb event listner
 document.addEventListener("keydown", function (event) {
   const key = event.key.toUpperCase();
 
@@ -37,34 +64,7 @@ document.addEventListener("click", function (event) {
   const stackNo = findStackNoXY(event.clientX, event.clientY);
   processUserSelection(stackNo);
 });
-//  usser selection processing func
-const processUserSelection = (stackNo) => {
-  if (finisshed) {
-    return;
-  }
 
-  // if nostack is selected before
-  if (selectedStackNo < 1) {
-    const stackDisks = getStackDisks(stackNo);
-    // ...if the new selection has disks, then this becomes the selection
-
-    if (stackDisks && stackDisks.length > 0) {
-      selectedStackNo = stackNo;
-    }
-    return;
-  }
-  if (moveDisk(selectedStackNo, stackNo)) {
-    // sucsecful move
-    moves++;
-
-    if (isFinished()) {
-      finished = true;
-      // sound ('tadam') // add a sound option for game finish
-    }
-  }
-
-  selectedStackNo = 0;
-};
 
 const moveDisk = (fromStackNo, toStackNo) => {
   const fromStack = stacks[fromStackNo - 1].disks;
@@ -102,7 +102,7 @@ function renderGame() {
     }
 
     gameContainer.appendChild(stackElement);
-  }
+  } 
 }
 
 // // Move a disk from one stack to another
@@ -139,3 +139,56 @@ startButton.addEventListener("click", function () {
     alert("Please select a valid number of disks (3-8).");
   }
 });
+
+//  draw the second and 3rd pegs
+function drawStack(stackNo, y) {
+    let disks = getStackDisks(stackNo);
+    let x = stacks[stackNo - 1].x;
+    let selected = stackNo === selectedStackNo;
+  
+    // Draw stick
+    let stickHeight = diskHeight * noDisks + disksSpace * (noDisks + 1);
+    line(x, y - stickHeight, x, y);
+  
+    // Draw disks
+    for (let i = 0; i < disks.length; i++) {
+      let disk = disks[i];
+      let diskWidth = disk * minDiskWidth;
+  
+      push();
+      fill(colors[7 - (disk - 1) % 8]);
+      noStroke();
+  
+      if (selected && i === disks.length - 1) {
+        strokeWeight(1);
+        stroke('Black');
+      }
+  
+      rect(
+        x - diskWidth / 2,
+        y - (i + 1) * diskHeight - disksSpace * (i + 1),
+        diskWidth,
+        diskHeight
+      );
+      pop();
+    }
+  
+    // Draw placeholder for empty stacks
+    if (!disks.length) {
+      push();
+      fill('LightGray');
+      noStroke();
+      rect(
+        x - minDiskWidth / 2,
+        y - diskHeight,
+        minDiskWidth,
+        diskHeight
+      );
+      pop();
+    }
+  }
+  
+  var canvas = document.getElementById('responsive-canvas');
+  var heightRatio = 1.5;
+  canvas.height = canvas.width * heightRatio;
+   

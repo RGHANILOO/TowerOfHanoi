@@ -15,6 +15,9 @@ h1 {
   height: 400px;
   background-color: aqua;
 }
+#responsive-canvas {
+  width: 100%;
+}
 
 .stack {
   display: flex;
@@ -35,4 +38,8 @@ h1 {
     margin-top: 10px;
     font-size: 18px;
     font-weight: bold;
+  }
+
+  active-button{
+    color:red;
   }
