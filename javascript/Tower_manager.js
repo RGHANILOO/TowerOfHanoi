@@ -81,7 +81,7 @@ class TowerManager {
     }
   
     toString() {
-      return 'TowerManager( ' + this.towers + ' )';
+      return `TowerManager( ${this.towers} )`;
     }
   }
   

@@ -1,59 +1,43 @@
+
+const diskSelect = document.getElementById('disk-select');
+const disk_count = Number(diskSelect.value);
+
+const game = new Game(disk_count);
+
 class Game {
-  constructor() {
-    this.numberOfDisks = 0;
-    this.tower = [];
-    this.moveCount = 0;
-    this.timer = new this.timer();
+  constructor(disks_count) {
+    this.start_new(disks_count);
   }
-  startGame(numberOfDisks) {
-    this.numberOfDisks = numberOfDisks;
-    this.initTowers();
-    this.moveCount = 0;
-    this.timer.start();
-    // 
 
-    // render te game state after initialisation
-    this.renderGameState();
-  }
-  initTowers() {
-    //gets called in startGame to initalise with selected number of disks on a tower
+  start_new(disks_count) {
+    debug.msg('New game');
 
-    this.towers = []
+    this.canvas = new Canvas('canvas');
+    this.tower_manager = new TowerManager(this.canvas, disks_count);
+    this.input_handler = new InputHandler(this.canvas.ctx, this.tower_manager);
+    this.game_state = new GameState(this.tower_manager, this.input_handler);
+    this.victory_celebrator = new VictoryCelebrator(this.input_handler);
 
-    // create the towert
-    for (let i=0;i<3;i++) {
-        const tower= new Tower();
-        this.towers.push(tower)
-    }
+    this.game_state.on_victory = () => {
+      this.victory_celebrator.on_victory();
+    };
 
-    // takes intp account eh selection from user and adds disks accordingly
-    for (let i = this.numberOfDisks; i < 0 ; i--) {
-        const disk = new Disk(i);
-        this.towers[0].addDisk(disk);
-        
-    }
+    this.render();
+
+    this.canvas.clear();
+    this.tower_manager.draw();
   }
-  moveDisk(fromTower, toTower) {
-    // move a disk from one tower to another
-    // update the ganme state and move count
-    // check win condition and game over
-  }
-  checkWinCondition() {
-    // check if th game has met the win conditions
-    // return a true of false
-  }
-  isGameOver() {
-    //checking if the game is over(win/lossconditio)
-    // return true or false
-  }
-  getMoveCount() {
-    return this.moveCount;
-  }
-  stopTimer() {
-    this.timer.stop();
-  }
-  resetGame() {
-    // resetthe game to initial state
-    // reset towers,movecount, and any other relevant props
-  }
+
 }
+
+// create a class of Game capturing the number of inputs from the select value as its parameter
+// initialise the game with the selected number of disks or deafualt to 3 to innitalise the game within the canvas object
+// create a new canvas object
+// create a new tower manager object
+// create a new input handler object referencing the canvas and tower manager objects
+// create a new game state object referencing the tower manager and input handler objects
+// create a new victory celebrator object referencing the input handler object
+// render the initialised game for user to interact with
+// clear the canvas
+// draw the tower manager object
+
